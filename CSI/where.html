@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>COViz Result</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAuUdW2g2kubwe41dZ1tLLc6D9Pdp3Oo6s&callback=initMap&libraries=&v=weekly"
+      defer
+    ></script>
+    <script src="where.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <style type="text/css">
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 80%;
+      }
+
+      /* Optional: Makes the sample page fill the window. */
+      html,
+      body {
+        height: 100%;
+        margin: 10%;
+        padding: 0;
+      }
+    </style>
+    <script>
+      let map;
+
+      function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 3,
+          center: { lat: 37.39361, lng: -122.099263 },
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+        });
+        // Create a <script> tag and set the USGS URL as the source.
+        const script = document.createElement("script");
+        // This example uses a local copy of the GeoJSON stored at
+        // http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojsonp
+        script.src =
+          "https://developers.google.com/maps/documentation/javascript/examples/json/earthquake_GeoJSONP.js";
+        document.getElementsByTagName("head")[0].appendChild(script);
+        map.data.setStyle((feature) => {
+          return {
+            icon: getCircle(),
+          };
+        });
+      
+            
+            i = 0;
+            var markers = [];
+            for ( pos in myData ) {
+            i = i + 1;
+            var row = myData[pos];
+		        window.console && console.log(row);
+            // if ( i < 3 ) { alert(row); }
+            var newLatlng = new google.maps.LatLng(row[0], row[1]);
+            var marker = new google.maps.Marker({
+                position: newLatlng,
+                map: map,
+                icon: getCircle(),
+
+            });
+            markers.push(marker);
+          
+
+          var options = {
+            imagePath: 'http://rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m'
+          }	
+        }
+      var markerCluster = new MarkerClusterer(map, markers, options);
+      }
+      
+
+
+      function getCircle() {
+        return {
+          path: google.maps.SymbolPath.CIRCLE,
+          fillColor: "blue",
+          fillOpacity: 0.2,
+          scale : 10,
+          strokeColor: "white",
+          strokeWeight: 0.5,
+        };
+      }
+
+      function eqfeed_callback(results) {
+        map.data.addGeoJson(results);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="map"></div>
+  </body>
+</html>
